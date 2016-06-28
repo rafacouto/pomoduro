@@ -1,5 +1,5 @@
  
-function Timespan(millis) {
+function Timespan(millis = 0) {
   this._millis = millis;
 }
 
@@ -45,21 +45,24 @@ Timespan.prototype.gte = function(other) {
 
 
 
-function Pomodoro(seconds) {
+function Timer(seconds = 0, clockwise = true) {
   this._timespan = new Timespan(seconds * 1000);
-  this._consumed = new Timespan(0);
+  this._clockwise = clockwise;
   this._running = null;
-  this._autostop = false;
 }
 
-Pomodoro.prototype.getTimespan = function() {
-  this._updateConsumed();
-  var result = new Timespan(this._timespan.getTotalMillis());
-  result.subtract(this._consumed);
+Timer.prototype.getTimespan = function() {
+  var result = new Timespan();
+  result.add(this._timespan);
+  if (this.isRunning()) {
+    var diff = this._millisNow() - this._running;
+    var lap = new Timespan(this._clockwise ? diff : -diff);
+    result.add(lap);
+  }
   return result;
 }
 
-Pomodoro.prototype.getTime = function() {
+Timer.prototype.getTimeStr = function() {
   var time = this.getTimespan().getTotalSeconds();
   var result = ''
   if (time < 0) { time = -time; result += '-'; }
@@ -70,41 +73,29 @@ Pomodoro.prototype.getTime = function() {
   return result;
 }
 
-Pomodoro.isAutostop = function() {
-  return this._autostop;
-}
-
-Pomodoro.setAutostop = function(enable) {
-  this._autostop = (enable != false);
-  return this;
-}
-
-Pomodoro.prototype.isRunning = function() {
+Timer.prototype.isRunning = function() {
   return (this._running != null);
 }
 
-Pomodoro.prototype.start = function() {
+Timer.prototype.start = function() {
   if (this.isRunning()) return;
-  this._running = new Date();
+  this._running = this._millisNow();
 }
 
-Pomodoro.prototype.stop = function() {
+Timer.prototype.stop = function() {
   if (!this.isRunning()) return;
-  this._updateConsumed();
+  this._timespan = this.getTimespan();
   this._running = null;
 }
 
-Pomodoro.prototype._updateConsumed = function() {
-  if (!(this.isRunning())) return;
-  var now = new Date();
-  var diff = now.getTime() - this._running.getTime();
-  this._running = now;
-  this._consumed.add(new Timespan(diff));
-  if (this._consumed.gte(this._timespan) && this._autostop) {
-    this._running = null;
-    this._consumed = new Timespan(this._timespan.getTotalMillis());
-  }
+Timer.prototype.reset = function(timespan = null) {
+  if (timespan == null) timespan = new Timespan();
+  this._timespan = timespan;
+}
+
+Timer.prototype._millisNow = function() {
+  return (new Date()).getTime();
 }
 
 
-
+// vim: et ts=2 sw=2
