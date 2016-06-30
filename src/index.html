@@ -55,21 +55,17 @@
         <script src="js/main.js"></script>
         <script src="js/vendor/jquery-3.min.js"></script>
         <script>
-            var timer = new Timer(5, false);
+            var pomo = new Pomodoro(50, 5, 5);
             var tmr = null;
             $(function() {
                 tmr = $('h1.timer');
                 tmr.click(function(){
-                    if (timer.isRunning()) timer.stop(); else timer.start();
+                    if (pomo.isPaused()) pomo.start(); else pomo.pause();
                 });
             });
             window.setInterval(function(){
                 if (tmr == null) return;
-                tmr.text(timer.getTimeStr());
-                if (timer.getTimespan().getTotalSeconds() <= 0) {
-                  timer.stop();
-                  timer.reset();
-                }
+                tmr.text(pomo.getTimeStr() + ' ' + pomo.getPhase());
             }, 250);
         </script>
     </body>

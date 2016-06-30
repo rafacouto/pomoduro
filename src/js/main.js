@@ -1,3 +1,5 @@
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
  
 function Timespan(millis = 0) {
   this._millis = millis;
@@ -27,13 +29,13 @@ Timespan.prototype.getTotalSeconds = function() {
   return Math.ceil(this._millis / 1000);
 }
 
-Timespan.prototype.add = function(timestamp) {
-  this._millis += timestamp._millis;
+Timespan.prototype.add = function(timespan) {
+  this._millis += timespan._millis;
   return this;
 }
 
-Timespan.prototype.subtract= function(timestamp) {
-  this._millis -= timestamp._millis;
+Timespan.prototype.sub = function(timespan) {
+  this._millis -= timespan._millis;
   return this;
 }
 
@@ -41,12 +43,11 @@ Timespan.prototype.gte = function(other) {
   return (this._millis >= other._millis);
 }
 
-
-
-
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 function Timer(seconds = 0, clockwise = true) {
-  this._timespan = new Timespan(seconds * 1000);
+  this._timespan = Timespan.prototype.fromSeconds(seconds);
   this._clockwise = clockwise;
   this._running = null;
 }
@@ -91,11 +92,79 @@ Timer.prototype.stop = function() {
 Timer.prototype.reset = function(timespan = null) {
   if (timespan == null) timespan = new Timespan();
   this._timespan = timespan;
+  if (this.isRunning()) this._running = this._millisNow();
 }
 
 Timer.prototype._millisNow = function() {
   return (new Date()).getTime();
 }
 
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
-// vim: et ts=2 sw=2
+function Pomodoro(work_seconds = 3300, break_seconds = 300, 
+    warn_seconds = 0) {
+  this._work = work_seconds;
+  this._break = break_seconds;
+  this._warn = warn_seconds;
+  this._phase = Pomodoro.prototype.PHASE_WORK;
+  this._timer = new Timer(work_seconds, false);
+}
+
+Pomodoro.prototype.PHASE_NONE = 'none';
+Pomodoro.prototype.PHASE_WORK = 'work';
+Pomodoro.prototype.PHASE_WARN = 'warn';
+Pomodoro.prototype.PHASE_BREAK = 'break';
+
+Pomodoro.prototype.getPhase = function() {
+  this._update();
+  return this._phase;
+}
+
+Pomodoro.prototype.start = function() {
+  this._timer.start();
+}
+
+Pomodoro.prototype.pause = function() {
+  this._timer.stop();
+}
+
+Pomodoro.prototype.isPaused= function() {
+  return !(this._timer.isRunning());
+}
+
+Pomodoro.prototype._update = function() {
+  var t = this._timer.getTimespan()
+  if (t.getTotalMillis() < 0) {
+    switch (this._phase) {
+      case Pomodoro.prototype.PHASE_WORK:
+        this._phase = Pomodoro.prototype.PHASE_WARN;
+        t.add(Timespan.prototype.fromSeconds(this._warn));
+        this._timer.reset(t);
+        this._update();
+        break;
+      case Pomodoro.prototype.PHASE_WARN:
+        this._phase = Pomodoro.prototype.PHASE_BREAK;
+        t.add(Timespan.prototype.fromSeconds(this._break));
+        this._timer.reset(t);
+        this._update();
+        break;
+      case Pomodoro.prototype.PHASE_BREAK:
+        this._phase = Pomodoro.prototype.PHASE_NONE;
+        this._timer.stop();
+        this._timer.reset();
+        break;
+    }
+  }
+}
+
+Pomodoro.prototype.getTimeStr = function() {
+  this._update();
+  return this._timer.getTimeStr();
+}
+
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+// vim: et ts=2 sw=2 ai
