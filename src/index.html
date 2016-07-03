@@ -49,7 +49,10 @@
         <script src="js/vendor/jquery-3.min.js"></script>
         <script>
             var workday = new WorkDay();
-            for (var h = 0; h < 24; h++) workday.newPomodoro(h + ':00');
+            for (var h = 0; h < 24; h++) {
+              for (var m = 0; m < 60; m += 3)
+                workday.newPomodoro(h + ':' + m, 1, 1, 1);
+            }
             $(function() {
               window.setInterval(function(){
                 pomo = workday.getPomodoro();
@@ -66,6 +69,13 @@
                 $('.timer-phase').text(phase_txt); 
                 $('.timer-min').text(min_txt); 
                 $('.timer-sec').text(sec_txt); 
+                var body = $('body');
+                if (!body.hasClass(phase_txt)) {
+                  body.removeClass('work');
+                  body.removeClass('warn');
+                  body.removeClass('break');
+                  body.addClass(phase_txt);
+                }
               }, 100);
             });
         </script>
