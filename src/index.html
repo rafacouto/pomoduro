@@ -76,6 +76,10 @@
                   body.removeClass('break');
                   body.addClass(phase_txt);
                 }
+                var sec = Number.parseInt(sec_txt);
+                if (sec <= 10 && (sec % 2 == 1)) {
+                  body.removeClass(phase_txt);
+                }
               }, 100);
             });
         </script>
