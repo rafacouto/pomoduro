@@ -121,6 +121,10 @@ Pomodoro.prototype.getPhase = function() {
   return this._phase;
 }
 
+Pomodoro.prototype.getTimer = function() {
+  return this._timer;
+}
+
 Pomodoro.prototype.start = function() {
   this._timer.start();
 }
@@ -161,6 +165,66 @@ Pomodoro.prototype._update = function() {
 Pomodoro.prototype.getTimeStr = function() {
   this._update();
   return this._timer.getTimeStr();
+}
+
+Pomodoro.prototype.getTotalSeconds = function() {
+  return this._work + this._warn + this._break;
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+function WorkDay() {
+  this._program= [];
+}
+
+WorkDay.prototype.newPomodoro = function(time, work_minutes = 50, 
+    break_minutes = 5, warn_minutes = 5) {
+  var start = WorkDay.prototype._time2sec(time);
+  var pomodoro = new Pomodoro(work_minutes * 60, 
+      break_minutes * 60, warn_minutes * 60);
+  this._program.push({
+    time: time,
+    pomodoro: pomodoro,
+    _start: start,
+    _stop: start + pomodoro.getTotalSeconds()
+    });
+}
+
+WorkDay.prototype.getProgram = function() {
+  return this._program;
+}
+
+WorkDay.prototype.getPomodoro = function() {
+  var len = this._program.length;
+  if (len > 0) {
+    var date = new Date();
+    var now = (date.getHours() * 3600) +
+      (date.getMinutes() * 60) + date.getSeconds();
+    for (var p = 0; p < len; p++) {
+      var interval = this._program[p];
+      if (now >= interval._start && now < interval._stop) {
+        var pomodoro = interval.pomodoro;
+        if (pomodoro.isPaused()) {
+          var diff = Timespan.prototype.fromSeconds(now - interval._start);
+          var timer = pomodoro.getTimer();
+          timer.reset(timer.getTimespan().sub(diff));
+          pomodoro.start();
+        }
+        return pomodoro;
+      }
+    }
+  }
+  return null;
+}
+
+WorkDay.prototype._time2sec = function(time) {
+  var match = (/(\d+):(\d+)/).exec(time);
+  if (match) {
+    var hour = Number.parseInt(match[1]);
+    var minute = Number.parseInt(match[2]);
+    return (hour * 3600) + (minute * 60);
+  }
 }
 
 

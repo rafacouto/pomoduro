@@ -55,18 +55,18 @@
         <script src="js/main.js"></script>
         <script src="js/vendor/jquery-3.min.js"></script>
         <script>
-            var pomo = new Pomodoro(50, 5, 5);
-            var tmr = null;
+            var workday = new WorkDay();
+            for (var h = 0; h < 24; h++) workday.newPomodoro(h + ':00');
             $(function() {
-                tmr = $('h1.timer');
-                tmr.click(function(){
-                    if (pomo.isPaused()) pomo.start(); else pomo.pause();
-                });
+              tmr = $('h1.timer');
+              window.setInterval(function(){
+                  pomo = workday.getPomodoro();
+                  if (pomo != null)
+                      tmr.text(pomo.getPhase() + ' ' + pomo.getTimeStr());
+                  else
+                      tmr.text('No pomos');
+              }, 100);
             });
-            window.setInterval(function(){
-                if (tmr == null) return;
-                tmr.text(pomo.getTimeStr() + ' ' + pomo.getPhase());
-            }, 250);
         </script>
     </body>
 </html>
