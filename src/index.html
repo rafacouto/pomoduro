@@ -31,7 +31,7 @@
                             <div class="timer-phase">phase</div>
                             <hr/>
                             <div class="timer-time">
-                                <span class="timer-min">0</span>:<span class="timer-sec">00</span>
+                                <span class="timer-min">0</span>:<span class="timer-sec">:00</span>
                             </div>
                         </div>
                 </article>
@@ -48,17 +48,27 @@
         <script src="js/main.js"></script>
         <script src="js/vendor/jquery-3.min.js"></script>
         <script>
+
+            // full-day pomodoros 
             var workday = new WorkDay();
             for (var h = 0; h < 24; h++) {
               for (var m = 0; m < 60; m += 3)
+
+                // just for testing: 1 minute work + break + warn
                 workday.newPomodoro(h + ':' + m, 1, 1, 1);
             }
+
             $(function() {
+
               window.setInterval(function(){
-                pomo = workday.getPomodoro();
-                var phase_txt = 'No pomos';
+
+                // default
+                var phase_txt = 'No pomodoro';
                 var min_txt = '0';
-                var sec_txt = ':00';
+                var sec_txt = '00';
+
+                // current pomodoro
+                pomo = workday.getPomodoro();
                 if (pomo != null)
                 {
                   phase_txt = pomo.getPhase();
@@ -66,9 +76,13 @@
                   min_txt = time_parts[0];
                   sec_txt = time_parts[1];
                 }
+
+                // update 
                 $('.timer-phase').text(phase_txt); 
                 $('.timer-min').text(min_txt); 
                 $('.timer-sec').text(sec_txt); 
+
+                // class by phase
                 var body = $('body');
                 if (!body.hasClass(phase_txt)) {
                   body.removeClass('work');
@@ -76,10 +90,13 @@
                   body.removeClass('break');
                   body.addClass(phase_txt);
                 }
+
+                // blick last seconds
                 var sec = Number.parseInt(sec_txt);
                 if (sec <= 10 && (sec % 2 == 1)) {
                   body.removeClass(phase_txt);
                 }
+
               }, 100);
             });
         </script>

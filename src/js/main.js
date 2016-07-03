@@ -1,3 +1,8 @@
+/*
+ * Pomoduro
+ * https://github.com/rafacouto/pomoduro
+ */
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
  
@@ -178,8 +183,8 @@ function WorkDay() {
   this._program= [];
 }
 
-WorkDay.prototype.newPomodoro = function(time, work_minutes = 50, 
-    break_minutes = 5, warn_minutes = 5) {
+WorkDay.prototype.newPomodoro = function(time, 
+    work_minutes = 50, break_minutes = 5, warn_minutes = 5) {
   var start = WorkDay.prototype._time2sec(time);
   var pomodoro = new Pomodoro(work_minutes * 60, 
       break_minutes * 60, warn_minutes * 60);
