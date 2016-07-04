@@ -20,7 +20,7 @@
 
                 <header class="wrapper clearfix">
                     <nav>
-                        <ul>
+                        <ul class="invisible">
                             <li><a href="#">settings</a></li>
                         </ul>
                     </nav>
@@ -49,14 +49,15 @@
         <script src="js/vendor/jquery-3.min.js"></script>
         <script>
 
-            // full-day pomodoros 
             var workday = new WorkDay();
-            for (var h = 0; h < 24; h++) {
-              for (var m = 0; m < 60; m += 3)
 
-                // just for testing: 1 minute work + break + warn
-                workday.newPomodoro(h + ':' + m, 1, 1, 1);
-            }
+            workday.newPomodoro('8:45', 50, 5, 5);
+            workday.newPomodoro('10:00', 50, 5, 5);
+            workday.newPomodoro('11:10', 50, 5, 5);
+            workday.newPomodoro('12:10', 50, 5, 5);
+            workday.newPomodoro('13:20', 50, 5, 5);
+            workday.newPomodoro('14:20', 50, 5, 5);
+            workday.newPomodoro('15:20', 50, 5, 5);
 
             $(function() {
 
@@ -92,7 +93,7 @@
                 }
 
                 // blick last seconds
-                var sec = Number.parseInt(sec_txt);
+                var sec = pomo.getTimer().getTimespan().getTotalSeconds();
                 if (sec <= 10 && (sec % 2 == 1)) {
                   body.removeClass(phase_txt);
                 }
