@@ -92,7 +92,7 @@
                 }
 
                 // blick last seconds
-                var sec = Number.parseInt(sec_txt);
+                var sec = pomo.getTimer().getTimespan().getTotalSeconds();
                 if (sec <= 10 && (sec % 2 == 1)) {
                   body.removeClass(phase_txt);
                 }
