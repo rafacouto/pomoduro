@@ -31,14 +31,14 @@
                             <div class="timer-phase">phase</div>
                             <hr/>
                             <div class="timer-time">
-                                <span class="timer-min">0</span>:<span class="timer-sec">:00</span>
+                                <span class="timer-min">0</span>:<span class="timer-sec">00</span>
                             </div>
                         </div>
                 </article>
 
                 <!--
                 <aside class="clearfix">
-                    <h3>Program</h3>
+                    <h3>Pomodoro program</h3>
                 </aside>
                 -->
 
@@ -91,7 +91,7 @@
                   body.addClass(phase_txt);
                 }
 
-                // blick last seconds
+                // blink last seconds
                 var sec = pomo.getTimer().getTimespan().getTotalSeconds();
                 if (sec <= 10 && (sec % 2 == 1)) {
                   body.removeClass(phase_txt);

@@ -112,14 +112,18 @@ function Pomodoro(work_seconds = 3300, break_seconds = 300,
   this._work = work_seconds;
   this._break = break_seconds;
   this._warn = warn_seconds;
-  this._phase = Pomodoro.prototype.PHASE_WORK;
-  this._timer = new Timer(work_seconds, false);
+  this.reset();
 }
 
 Pomodoro.prototype.PHASE_NONE = 'none';
 Pomodoro.prototype.PHASE_WORK = 'work';
 Pomodoro.prototype.PHASE_WARN = 'warn';
 Pomodoro.prototype.PHASE_BREAK = 'break';
+
+Pomodoro.prototype.reset = function() {
+  this._phase = Pomodoro.prototype.PHASE_WORK;
+  this._timer = new Timer(this._work, false);
+}
 
 Pomodoro.prototype.getPhase = function() {
   this._update();
@@ -140,6 +144,11 @@ Pomodoro.prototype.pause = function() {
 
 Pomodoro.prototype.isPaused= function() {
   return !(this._timer.isRunning());
+}
+
+Pomodoro.prototype.isFinished = function() {
+  this._update();
+  return (this.getPhase() == Pomodoro.prototype.PHASE_NONE);
 }
 
 Pomodoro.prototype._update = function() {
@@ -181,6 +190,7 @@ Pomodoro.prototype.getTotalSeconds = function() {
 
 function WorkDay() {
   this._program= [];
+  this._current = -1;
 }
 
 WorkDay.prototype.newPomodoro = function(time, 
@@ -201,25 +211,55 @@ WorkDay.prototype.getProgram = function() {
 }
 
 WorkDay.prototype.getPomodoro = function() {
+
+  // test if program contains pomodoro intervals
   var len = this._program.length;
   if (len > 0) {
+
+    // test if current pomodoro is running
+    if (this._current >= 0) {
+
+      // return the current pomodoro while not finished
+      var pomodoro = this._program[this._current].pomodoro;
+      if (!pomodoro.isFinished()) return pomodoro;
+
+      // prepare the finished pomodoro to next day
+      pomodoro.reset();
+    }
+
+    // current time of the day in seconds
     var date = new Date();
     var now = (date.getHours() * 3600) +
       (date.getMinutes() * 60) + date.getSeconds();
+
+    // for each interval in the program
     for (var p = 0; p < len; p++) {
+
+      // look for the first interval that must be the active
       var interval = this._program[p];
       if (now >= interval._start && now < interval._stop) {
+
+        // update the current interval
+        this._current = p;
         var pomodoro = interval.pomodoro;
-        if (pomodoro.isPaused()) {
+
+        // test if pomodoro has not started yet
+        if (pomodoro.isPaused()) { 
+
+          // adjust the difference from the start time
           var diff = Timespan.prototype.fromSeconds(now - interval._start);
           var timer = pomodoro.getTimer();
           timer.reset(timer.getTimespan().sub(diff));
+
+          // start the timer for current pomodoro
           pomodoro.start();
         }
+
         return pomodoro;
       }
     }
   }
+
   return null;
 }
 
