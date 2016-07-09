@@ -6,12 +6,12 @@
 /*
 Pomodoro transfer object .
  */
-var Pomodoro = {
+function PomodoroTO (start_time, work_mins, break_mins, warn_mins){
 
-    start_time: new Date(),
-    work_mins: 23,
-    break_mins: 23,
-    warn_mins: 23
+    this.start_time = start_time;
+    this.work_mins = work_mins;
+    this.break_mins = break_mins;
+    this.warn_mins = warn_mins;
 };
 
 /*
@@ -39,6 +39,10 @@ var PomoDAO = {
 
             // TODO . Check pomodoro time collision. May call another function.
         }
+
+        index.push(pomodoro);
+
+        this.storageEngine.setItem(this.storageKey, JSON.stringify(index));
 
     },
     getAllPomodoros: function () {
