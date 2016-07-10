@@ -27,34 +27,44 @@ function PomodoroTO(start_time, work_mins, break_mins, warn_mins) {
 
 var PomoDAO = {
 
-    storageEngine: window.localStorage,
-    storageKey: "mainprogram",
+    _storageEngine: window.localStorage,
+    _storageKey: "mainprogram",
+
+    getStorageKey: function () {
+
+        return this._storageKey;
+    },
 
     setStorageKey: function (storage_key) {
 
-        this.storageKey = storage_key;
+        this._storageKey = storage_key;
+    },
+
+    getStorageKeys: function () {
+
+        return Object.keys(this._storageEngine);
     },
 
     // Creating the storage key if not exists.
     checkStorage: function () {
-        if (!this.storageEngine.getItem(this.storageKey)) {
-            this.storageEngine.setItem(this.storageKey, JSON.stringify([]));
+        if (!this._storageEngine.getItem(this._storageKey)) {
+            this._storageEngine.setItem(this._storageKey, JSON.stringify([]));
         }
     },
 
     add: function (pomodoro) {
 
         this.checkStorage();
-        var index = JSON.parse(this.storageEngine.getItem(this.storageKey));
+        var index = JSON.parse(this._storageEngine.getItem(this._storageKey));
 
         var new_length = index.push(pomodoro);
-        this.storageEngine.setItem(this.storageKey, JSON.stringify(index));
+        this._storageEngine.setItem(this._storageKey, JSON.stringify(index));
         return new_length - 1;
 
     },
     getAll: function () {
         this.checkStorage();
-        return JSON.parse(this.storageEngine.getItem(this.storageKey));
+        return JSON.parse(this._storageEngine.getItem(this._storageKey));
     },
     getOne: function (index_num) {
         this.checkStorage();
@@ -64,9 +74,9 @@ var PomoDAO = {
         this.checkStorage();
         var pomodoros = this.getAll();
         pomodoros.splice(index_num, 1);
-        this.storageEngine.setItem(this.storageKey, JSON.stringify(pomodoros));
+        this._storageEngine.setItem(this._storageKey, JSON.stringify(pomodoros));
     },
     removeAll: function () {
-        this.storageEngine.setItem(this.storageKey, JSON.stringify([]));
+        this._storageEngine.setItem(this._storageKey, JSON.stringify([]));
     }
 };

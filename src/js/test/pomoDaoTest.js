@@ -150,7 +150,15 @@ describe('Pomoduro data access object tests. WebStorage.', function () {
     it('Should change storage key.', function () {
 
         pomoDaoTest.setStorageKey("other_program");
-        expect(pomoDaoTest.storageKey).toEqual("other_program");
+        expect(pomoDaoTest.getStorageKey()).toEqual("other_program");
+    });
+
+    it('Should return storage keys.', function () {
+
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.setStorageKey("other_program");
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        expect(pomoDaoTest.getStorageKeys().length).toEqual(2);
     });
 
 });
