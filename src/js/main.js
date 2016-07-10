@@ -216,15 +216,21 @@ WorkDay.prototype.getPomodoro = function() {
   var len = this._program.length;
   if (len > 0) {
 
-    // test if current pomodoro is running
     if (this._current >= 0) {
 
-      // return the current pomodoro while not finished
+      // current pomodoro
       var pomodoro = this._program[this._current].pomodoro;
-      if (!pomodoro.isFinished()) return pomodoro;
 
-      // prepare the finished pomodoro to next day
-      pomodoro.reset();
+      // is active
+      if (!pomodoro.isPaused()) return pomodoro;
+
+      // is finished
+      if (pomodoro.isFinished()) {
+
+        // reset pomodoro
+        pomodoro.reset();
+        this._current = -1;
+      }
     }
 
     // current time of the day in seconds
@@ -235,7 +241,7 @@ WorkDay.prototype.getPomodoro = function() {
     // for each interval in the program
     for (var p = 0; p < len; p++) {
 
-      // look for the first interval that must be the active
+      // look for the first active interval
       var interval = this._program[p];
       if (now >= interval._start && now < interval._stop) {
 
@@ -243,7 +249,7 @@ WorkDay.prototype.getPomodoro = function() {
         this._current = p;
         var pomodoro = interval.pomodoro;
 
-        // test if pomodoro has not started yet
+        // test pomodoro has not started yet
         if (pomodoro.isPaused()) { 
 
           // adjust the difference from the start time
@@ -258,6 +264,7 @@ WorkDay.prototype.getPomodoro = function() {
         return pomodoro;
       }
     }
+
   }
 
   return null;
