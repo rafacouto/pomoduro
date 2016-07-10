@@ -44,8 +44,7 @@ describe('Pomoduro data access object tests. WebStorage.', function () {
             'start_time',
             'work_mins',
             'break_mins',
-            'warn_mins',
-            'finish_time'
+            'warn_mins'
         ];
         expect(Object.keys(pomoduro)).toEqual(expected);
 

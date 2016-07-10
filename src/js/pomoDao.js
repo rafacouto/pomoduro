@@ -18,7 +18,6 @@ function PomodoroTO(start_time, work_mins, break_mins, warn_mins) {
     this.work_mins = work_mins;
     this.break_mins = break_mins;
     this.warn_mins = warn_mins;
-    this.finish_time = this.start_time + this.work_mins * 60000 + this.break_mins * 60000 + this.warn_mins * 60000;
 };
 
 /*
