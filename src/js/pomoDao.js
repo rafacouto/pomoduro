@@ -4,60 +4,69 @@
 
 
 /*
-Pomodoro transfer object .
+ Pomodoro transfer object .
  */
-function PomodoroTO (start_time, work_mins, break_mins, warn_mins){
+function PomodoroTO(start_time, work_mins, break_mins, warn_mins) {
+
+    if (start_time === undefined || work_mins === undefined
+        || break_mins === undefined || warn_mins === undefined) {
+
+        throw new Error("Pomodoro transfer object needs al arguments.");
+    }
 
     this.start_time = start_time;
     this.work_mins = work_mins;
     this.break_mins = break_mins;
     this.warn_mins = warn_mins;
+    this.finish_time = this.start_time + this.work_mins * 60000 + this.break_mins * 60000 + this.warn_mins * 60000;
 };
 
 /*
-Pomodoro bridge to local storage
+ Pomodoro bridge to local storage
  */
 
 var PomoDAO = {
 
     storageEngine: window.localStorage,
-    storageKey: "pomodoro",
+    storageKey: "mainprogram",
+
+    setStorageKey: function (storage_key) {
+
+        this.storageKey = storage_key;
+    },
 
     // Creating the storage key if not exists.
     checkStorage: function () {
         if (!this.storageEngine.getItem(this.storageKey)) {
-            this.storageEngine.setItem("pomodoro", JSON.stringify([]));
+            this.storageEngine.setItem(this.storageKey, JSON.stringify([]));
         }
     },
-    // TODO. Must return the index in success. undefined on fail.
-    addPomodoro: function (pomodoro) {
+
+    add: function (pomodoro) {
 
         this.checkStorage();
         var index = JSON.parse(this.storageEngine.getItem(this.storageKey));
 
-        for(var i=0, length=index.length; i < length; i++){
-
-            // TODO . Check pomodoro time collision. May call another function.
-        }
-
-        index.push(pomodoro);
-
+        var new_length = index.push(pomodoro);
         this.storageEngine.setItem(this.storageKey, JSON.stringify(index));
+        return new_length - 1;
 
     },
-    getAllPomodoros: function () {
+    getAll: function () {
         this.checkStorage();
         return JSON.parse(this.storageEngine.getItem(this.storageKey));
     },
-    getPomodoro:function(index_num){
+    getOne: function (index_num) {
         this.checkStorage();
-        return this.getAllPomodoros()[index_num];
+        return this.getAll()[index_num];
     },
-    
-    deletePomodoro: function(index_num){
+    removeOne: function (index_num) {
         this.checkStorage();
-        var pomodoros = this.getAllPomodoros();
-        delete pomodoros[index_num];
+        var pomodoros = this.getAll();
+        pomodoros.splice(index_num, 1);
         this.storageEngine.setItem(this.storageKey, JSON.stringify(pomodoros));
+    },
+    removeAll: function () {
+        this.storageEngine.setItem(this.storageKey, JSON.stringify([]));
     }
 };

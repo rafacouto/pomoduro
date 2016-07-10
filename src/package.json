@@ -1,0 +1,13 @@
+{
+  "name": "Pomoduro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "mocha js/test"
+  },
+  "author": "",
+  "devDependencies": {
+    "jasmine": "^2.4.1"
+  }
+}
