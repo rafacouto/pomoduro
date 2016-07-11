@@ -17,6 +17,7 @@ var pomoSettings = {
     init: function () {
         this._element = document.querySelector(this.getSelector());
         this.refreshProgramList();
+        this.refreshPomoduroList()
         this.addProgramAddEvent();
         this.addProgramSwitchEvent();
         this.addPomoduroAddEvent();
