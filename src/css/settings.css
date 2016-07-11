@@ -1,0 +1,30 @@
+/* Temporary style for prototyping*/
+body {
+    padding: 100px;
+}
+
+/*----> */
+
+#pomoduro-settings-table {
+
+}
+
+#pomoduro-settings-table td, th {
+
+    border: 1px solid grey;
+    padding: 0px 5px 0px 5px;
+
+}
+
+#pomoduro-settings-table .td-med {
+
+    min-width: 150px;
+    text-align: center;
+}
+
+#pomoduro-settings-table .td-small {
+
+    min-width: 50px;
+    text-align: center;
+}
+

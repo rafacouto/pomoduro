@@ -37,10 +37,11 @@ var PomoDAO = {
     setStorageKey: function (storage_key) {
 
         this._storageKey = storage_key;
+        this.checkStorage();
     },
 
     getStorageKeys: function () {
-
+        this.checkStorage();
         return Object.keys(this._storageEngine);
     },
 
