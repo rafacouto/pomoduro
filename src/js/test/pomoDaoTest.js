@@ -159,5 +159,65 @@ describe('Pomoduro data access object tests. WebStorage.', function () {
         pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
         expect(pomoDaoTest.getStorageKeys().length).toEqual(2);
     });
+    
+    it('Should clear all pomodoros in specified program, isolated from other programs', function(){
 
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.setStorageKey("other_program");
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.clearStorageKey();
+        expect(pomoDaoTest.getAll().length).toEqual(0);
+        pomoDaoTest.setStorageKey("mainprogram");
+        expect(pomoDaoTest.getAll().length).toEqual(2);
+        pomoDaoTest.setStorageKey("other_program");
+        pomoDaoTest.clearStorageKey("mainprogram");
+        pomoDaoTest.setStorageKey("mainprogram");
+        expect(pomoDaoTest.getAll().length).toEqual(0);
+
+    });
+
+    it('Should remove an entire pomodoro program respecting other programs.', function(){
+
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.setStorageKey("other_program");
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.setStorageKey("other_program2");
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.add(new PomodoroTO(23, 23, 23, 23));
+        pomoDaoTest.removeStorageKey();
+        expect(pomoDaoTest.getStorageKeys().indexOf("other_program2")).toEqual(-1);
+        pomoDaoTest.setStorageKey("other_program");
+        expect(pomoDaoTest.getAll().length).toEqual(2);
+        pomoDaoTest.setStorageKey("mainprogram");
+        pomoDaoTest.removeStorageKey("other_program");
+        expect(pomoDaoTest.getStorageKeys().indexOf("other_program")).toEqual(-1);
+
+    });
+    
+    it('Should return pointer to mainprogram only when actual program is deleted.', function(){
+
+        pomoDaoTest.setStorageKey("other_program");
+        pomoDaoTest.removeStorageKey();
+        expect(pomoDaoTest.getStorageKey()).toEqual("mainprogram");
+        pomoDaoTest.setStorageKey("other_program2");
+        pomoDaoTest.setStorageKey("other_program3");
+        pomoDaoTest.removeStorageKey("other_program2");
+        expect(pomoDaoTest.getStorageKey()).toEqual("other_program3");
+        expect(pomoDaoTest.getStorageKeys().length).toEqual(2);
+
+    });
+
+    it('Should cannot remove the mainprogram.', function(){
+
+        pomoDaoTest.removeStorageKey();
+        pomoDaoTest.removeStorageKey("mainprogram");
+        expect(pomoDaoTest.getStorageKey()).toEqual("mainprogram");
+        expect(pomoDaoTest.getStorageKeys().length).toEqual(1);
+
+    });
+    
 });

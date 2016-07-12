@@ -37,10 +37,28 @@ var PomoDAO = {
     setStorageKey: function (storage_key) {
 
         this._storageKey = storage_key;
+        this.checkStorage();
     },
-
+    clearStorageKey: function(key){
+        if(typeof key === 'undefined'){
+            key = this.getStorageKey();
+        }
+        this._storageEngine.setItem(key, JSON.stringify([]));
+    },
+    removeStorageKey: function(key){
+        if(typeof key === 'undefined'){
+            key = this.getStorageKey();
+        }
+        if(key == 'mainprogram'){
+            return false;
+        }
+        this._storageEngine.removeItem(key);
+        if(this.getStorageKey() == key){
+            this.setStorageKey("mainprogram");
+        }
+    },
     getStorageKeys: function () {
-
+        this.checkStorage();
         return Object.keys(this._storageEngine);
     },
 
