@@ -1,17 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Settings prototype</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Pomodoro settings</title>
+    <meta name="description" content="Pomoduro is a web interface to run Pomodoros.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
+
+<table id="pomoduro-settings-table">
+    <thead>
+    <tr>
+        <th>Programs</th>
+        <th colspan="2"><select class="program-select"></select></th>
+        <th colspan="1"><input type="text" class="program-name" placeholder="program name ..."></th>
+        <th class="td-small">
+            <button class="program-add-button">add program</button>
+        </th>
+        <th class="td-small">
+            <button class="program-clear-button">clear</button>
+        </th>
+        <th class="td-small">
+            <button class="program-delete-button">delete</button>
+        </th>
+
+    </tr>
+    <tr>
+        <th colspan="7" class="table-separator align-center">POMODUROS</th>
+    </tr>
+
+    <tr>
+        <th class="td-small">id#</th>
+        <th class="td-med">Start</th>
+        <th class="td-med">Work minutes</th>
+        <th class="td-med">Break minutes</th>
+        <th class="td-med">Warn minutes</th>
+        <th class="td-small" colspan="2">&nbsp;</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+    <tr>
+        <td class="td-med">Pomoduros</td>
+        <td class="td-med"><input type="time" placeholder="start time ..." class="pomo-add-start align-center"></td>
+        <td class="td-med"><input type="number" min="0" placeholder="work minutes ..."
+                                  class="pomo-add-work align-center"></td>
+        <td class="td-med"><input type="number" min="0" placeholder="break minutes ..."
+                                  class="pomo-add-break align-center"></td>
+        <td class="td-med"><input type="number" min="0" placeholder="warn minutes ..."
+                                  class="pomo-add-warn align-center"></td>
+        <td class="td-small" colspan="2">
+            <button class="pomodoro-add-button">add</button>
+        </td>
+    </tr>
+    <td colspan="7" align="center">
+        <button class="exec-button">Execute program</button>
+    </td>
+    </tr>
+    </tfoot>
+    <tbody>
+
+    </tbody>
+
+</table>
 
 </body>
 
 <script src="js/pomoDao.js"></script>
+<script src="js/settings.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
+        pomoSettings.init();
 
     });
 </script>
