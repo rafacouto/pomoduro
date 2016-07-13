@@ -9,5 +9,8 @@
   "author": "",
   "devDependencies": {
     "jasmine": "^2.4.1"
+  },
+  "dependencies": {
+    "jquery": "^3.1.0"
   }
 }
