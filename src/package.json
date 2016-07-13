@@ -1,7 +1,9 @@
 {
   "name": "Pomoduro",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pomoduro is a simple web application to manage pomodoros along the workday automatically.",
+  "repository": "https://github.com/rafacouto/pomoduro",
+  "license": "AGPL-3.0",
   "main": "index.html",
   "scripts": {
     "test": "mocha js/test"
