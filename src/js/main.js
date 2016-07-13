@@ -44,8 +44,28 @@ Timespan.prototype.sub = function(timespan) {
   return this;
 }
 
+Timespan.prototype.eq = function(other) {
+  return (this._millis == other._millis);
+}
+
+Timespan.prototype.ne = function(other) {
+  return (this._millis != other._millis);
+}
+
+Timespan.prototype.gt = function(other) {
+  return (this._millis > other._millis);
+}
+
+Timespan.prototype.lt = function(other) {
+  return (this._millis < other._millis);
+}
+
 Timespan.prototype.gte = function(other) {
   return (this._millis >= other._millis);
+}
+
+Timespan.prototype.lte = function(other) {
+  return (this._millis <= other._millis);
 }
 
 //////////////////////////////////////////////////////////////////////
