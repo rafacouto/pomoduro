@@ -88,9 +88,13 @@ Timer.prototype.getTimespan = function() {
   return result;
 }
 
+Timer.prototype.isClockwise = function() {
+  return (this._clockwise == true);
+}
+
 Timer.prototype.getTimeStr = function() {
   var time = this.getTimespan().getTotalSeconds();
-  var result = ''
+  var result = '';
   if (time < 0) { time = -time; result += '-'; }
   var s = time % 60;
   time = (time - s) / 60;
