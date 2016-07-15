@@ -154,6 +154,18 @@ Pomodoro.prototype.getPhase = function() {
   return this._phase;
 }
 
+Pomodoro.prototype.getPhaseSeconds = function(phase) {
+  switch (phase) {
+    case Pomodoro.prototype.PHASE_WORK:
+      return this._work;
+    case Pomodoro.prototype.PHASE_WARN:
+      return this._warn;
+    case Pomodoro.prototype.PHASE_BREAK:
+      return this._break;
+  }
+  return 0;
+}
+
 Pomodoro.prototype.getTimer = function() {
   return this._timer;
 }
