@@ -33,7 +33,7 @@ describe('Timer class tests.', function () {
 
   it('Timer reset.', function() {
     var t = new Timer();
-    t.reset(Timespan.prototype.fromMinutes(2));
+    t.reset(Timespan.fromMinutes(2));
     expect(t.isRunning()).toBe(false);
     expect(t.getTimespan().getTotalSeconds()).toBe(120);
   });
@@ -41,11 +41,11 @@ describe('Timer class tests.', function () {
   it('Timer as string (mm:SS).', function() {
     var t = new Timer();
     expect(t.getTimeStr()).toBe('0:00');
-    t.reset(Timespan.prototype.fromSeconds(10));
+    t.reset(Timespan.fromSeconds(10));
     expect(t.getTimeStr()).toBe('0:10');
-    t.reset(Timespan.prototype.fromMinutes(3));
+    t.reset(Timespan.fromMinutes(3));
     expect(t.getTimeStr()).toBe('3:00');
-    t.reset(Timespan.prototype.fromHours(4));
+    t.reset(Timespan.fromHours(4));
     expect(t.getTimeStr()).toBe('240:00');
   });
 
