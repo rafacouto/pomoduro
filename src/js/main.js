@@ -10,19 +10,19 @@ function Timespan(millis = 0) {
   this._millis = millis;
 }
 
-Timespan.prototype.fromSeconds = function(seconds) {
+Timespan.fromSeconds = function(seconds) {
   return new Timespan(seconds * 1000);
 }
 
-Timespan.prototype.fromMinutes = function(minutes) {
+Timespan.fromMinutes = function(minutes) {
   return new Timespan(minutes * 60000);
 }
 
-Timespan.prototype.fromHours = function(hours) {
+Timespan.fromHours = function(hours) {
   return new Timespan(hours * 3600000);
 }
 
-Timespan.prototype.fromDays = function(days) {
+Timespan.fromDays = function(days) {
   return new Timespan(days * 86400000);
 }
 
@@ -72,7 +72,7 @@ Timespan.prototype.lte = function(other) {
 //////////////////////////////////////////////////////////////////////
 
 function Timer(seconds = 0, clockwise = true) {
-  this._timespan = Timespan.prototype.fromSeconds(seconds);
+  this._timespan = Timespan.fromSeconds(seconds);
   this._clockwise = clockwise;
   this._running = null;
 }
@@ -81,16 +81,20 @@ Timer.prototype.getTimespan = function() {
   var result = new Timespan();
   result.add(this._timespan);
   if (this.isRunning()) {
-    var diff = this._millisNow() - this._running;
+    var diff = Timer._millisNow() - this._running;
     var lap = new Timespan(this._clockwise ? diff : -diff);
     result.add(lap);
   }
   return result;
 }
 
+Timer.prototype.isClockwise = function() {
+  return (this._clockwise == true);
+}
+
 Timer.prototype.getTimeStr = function() {
   var time = this.getTimespan().getTotalSeconds();
-  var result = ''
+  var result = '';
   if (time < 0) { time = -time; result += '-'; }
   var s = time % 60;
   time = (time - s) / 60;
@@ -105,7 +109,7 @@ Timer.prototype.isRunning = function() {
 
 Timer.prototype.start = function() {
   if (this.isRunning()) return;
-  this._running = this._millisNow();
+  this._running = Timer._millisNow();
 }
 
 Timer.prototype.stop = function() {
@@ -117,10 +121,10 @@ Timer.prototype.stop = function() {
 Timer.prototype.reset = function(timespan = null) {
   if (timespan == null) timespan = new Timespan();
   this._timespan = timespan;
-  if (this.isRunning()) this._running = this._millisNow();
+  if (this.isRunning()) this._running = Timer._millisNow();
 }
 
-Timer.prototype._millisNow = function() {
+Timer._millisNow = function() {
   return (new Date()).getTime();
 }
 
@@ -135,19 +139,31 @@ function Pomodoro(work_seconds = 3300, break_seconds = 300,
   this.reset();
 }
 
-Pomodoro.prototype.PHASE_NONE = 'none';
-Pomodoro.prototype.PHASE_WORK = 'work';
-Pomodoro.prototype.PHASE_WARN = 'warn';
-Pomodoro.prototype.PHASE_BREAK = 'break';
+Pomodoro.PHASE_NONE = 'none';
+Pomodoro.PHASE_WORK = 'work';
+Pomodoro.PHASE_WARN = 'warning';
+Pomodoro.PHASE_BREAK = 'break';
 
 Pomodoro.prototype.reset = function() {
-  this._phase = Pomodoro.prototype.PHASE_WORK;
+  this._phase = Pomodoro.PHASE_WORK;
   this._timer = new Timer(this._work, false);
 }
 
 Pomodoro.prototype.getPhase = function() {
   this._update();
   return this._phase;
+}
+
+Pomodoro.prototype.getPhaseSeconds = function(phase) {
+  switch (phase) {
+    case Pomodoro.PHASE_WORK:
+      return this._work;
+    case Pomodoro.PHASE_WARN:
+      return this._warn;
+    case Pomodoro.PHASE_BREAK:
+      return this._break;
+  }
+  return 0;
 }
 
 Pomodoro.prototype.getTimer = function() {
@@ -168,27 +184,27 @@ Pomodoro.prototype.isPaused= function() {
 
 Pomodoro.prototype.isFinished = function() {
   this._update();
-  return (this.getPhase() == Pomodoro.prototype.PHASE_NONE);
+  return (this.getPhase() == Pomodoro.PHASE_NONE);
 }
 
 Pomodoro.prototype._update = function() {
   var t = this._timer.getTimespan()
   if (t.getTotalMillis() < 0) {
     switch (this._phase) {
-      case Pomodoro.prototype.PHASE_WORK:
-        this._phase = Pomodoro.prototype.PHASE_WARN;
+      case Pomodoro.PHASE_WORK:
+        this._phase = Pomodoro.PHASE_WARN;
         t.add(Timespan.prototype.fromSeconds(this._warn));
         this._timer.reset(t);
         this._update();
         break;
-      case Pomodoro.prototype.PHASE_WARN:
-        this._phase = Pomodoro.prototype.PHASE_BREAK;
+      case Pomodoro.PHASE_WARN:
+        this._phase = Pomodoro.PHASE_BREAK;
         t.add(Timespan.prototype.fromSeconds(this._break));
         this._timer.reset(t);
         this._update();
         break;
-      case Pomodoro.prototype.PHASE_BREAK:
-        this._phase = Pomodoro.prototype.PHASE_NONE;
+      case Pomodoro.PHASE_BREAK:
+        this._phase = Pomodoro.PHASE_NONE;
         this._timer.stop();
         this._timer.reset();
         break;
@@ -214,8 +230,8 @@ function WorkDay() {
 }
 
 WorkDay.prototype.newPomodoro = function(time, 
-    work_minutes = 50, break_minutes = 5, warn_minutes = 5) {
-  var start = WorkDay.prototype._time2sec(time);
+    work_minutes = 50, break_minutes = 10, warn_minutes = 0) {
+  var start = WorkDay._time2sec(time);
   var pomodoro = new Pomodoro(work_minutes * 60, 
       break_minutes * 60, warn_minutes * 60);
   this._program.push({
@@ -273,7 +289,7 @@ WorkDay.prototype.getPomodoro = function() {
         if (pomodoro.isPaused()) { 
 
           // adjust the difference from the start time
-          var diff = Timespan.prototype.fromSeconds(now - interval._start);
+          var diff = Timespan.fromSeconds(now - interval._start);
           var timer = pomodoro.getTimer();
           timer.reset(timer.getTimespan().sub(diff));
 
@@ -290,7 +306,7 @@ WorkDay.prototype.getPomodoro = function() {
   return null;
 }
 
-WorkDay.prototype._time2sec = function(time) {
+WorkDay._time2sec = function(time) {
   var match = (/(\d+):(\d+)/).exec(time);
   if (match) {
     var hour = Number.parseInt(match[1]);

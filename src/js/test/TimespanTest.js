@@ -12,22 +12,22 @@ describe('Timespan class tests.', function () {
   });
 
   it('A new instance of Timespan from second units.', function() {
-    var ts = Timespan.prototype.fromSeconds(5);
+    var ts = Timespan.fromSeconds(5);
     expect(ts.getTotalMillis()).toBe(5 * 1000);
   });
 
   it('A new instance of Timespan from minute units.', function() {
-    var ts = Timespan.prototype.fromMinutes(2);
+    var ts = Timespan.fromMinutes(2);
     expect(ts.getTotalMillis()).toBe(2 * 60 * 1000);
   });
 
   it('A new instance of Timespan from hour units.', function() {
-    var ts = Timespan.prototype.fromHours(3);
+    var ts = Timespan.fromHours(3);
     expect(ts.getTotalMillis()).toBe(3 * 60 * 60 * 1000);
   });
 
   it('A new instance of Timespan from day units.', function() {
-    var ts = Timespan.prototype.fromDays(4);
+    var ts = Timespan.fromDays(4);
     expect(ts.getTotalMillis()).toBe(4 * 24 * 60 * 60 * 1000);
   });
 
@@ -41,7 +41,7 @@ describe('Timespan class tests.', function () {
 
   it('Addition of 2 Timespan instances.', function() {
     var half_second = new Timespan(500);
-    var one_second = Timespan.prototype.fromSeconds(1);
+    var one_second = Timespan.fromSeconds(1);
     var ts = new Timespan();
     expect(ts.getTotalMillis()).toBe(0);
     expect(ts.add(one_second).getTotalMillis()).toBe(1000);
@@ -51,16 +51,16 @@ describe('Timespan class tests.', function () {
 
   it('Substration of 2 Timespan instances.', function() {
     var half_second = new Timespan(500);
-    var one_second = Timespan.prototype.fromSeconds(1);
-    var ts = Timespan.prototype.fromSeconds(1);
+    var one_second = Timespan.fromSeconds(1);
+    var ts = Timespan.fromSeconds(1);
     expect(ts.getTotalMillis()).toBe(1000);
     expect(ts.sub(half_second).getTotalMillis()).toBe(500);
     expect(ts.sub(one_second).getTotalMillis()).toBe(-500);
   });
 
   it('Comparison of 2 Timespan instances', function() {
-    var ts1 = Timespan.prototype.fromSeconds(1);
-    var ts2 = Timespan.prototype.fromSeconds(2);
+    var ts1 = Timespan.fromSeconds(1);
+    var ts2 = Timespan.fromSeconds(2);
     // equals
     expect(ts1.eq(ts1)).toBe(true);
     expect(ts1.eq(ts2)).toBe(false);
