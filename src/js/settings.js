@@ -138,7 +138,7 @@ var pomoSettings = {
 
             if(!start_time.value.match(/^\d\d:\d\d$/)){
 
-                alert('Start Time doesn seems a valid mm:ss time.');
+                alert('Start Time doesn seems a valid hh:mm time.');
                 return false;
             }
 
