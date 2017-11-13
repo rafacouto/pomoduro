@@ -24,7 +24,6 @@ var pomoSettings = {
         this.addProgramDelEvent();
         this.addProgramSwitchEvent();
         this.addPomoduroAddEvent();
-        this.addExecuteProgramEvent();
     },
     addProgramAddEvent: function () {
         var button = this._element.querySelector('.program-add-button');
@@ -137,6 +136,12 @@ var pomoSettings = {
                 }
             }
 
+            if(!start_time.value.match(/^\d\d:\d\d$/)){
+
+                alert('Start Time doesn seems a valid hh:mm time.');
+                return false;
+            }
+
             /// TODO . Pomoduro time collision check ??????.
 
             var pomoduro = new PomodoroTO(start_time.value, work_minutes.value, break_minutes.value, warn_minutes.value);
@@ -147,18 +152,6 @@ var pomoSettings = {
             }
 
             this.refreshPomoduroList();
-
-        }.bind(this));
-    },
-    addExecuteProgramEvent: function () {
-
-        var button = document.querySelector('.exec-button');
-        button.addEventListener('click', function () {
-
-            //// TODO , LINK THIS WITH MAIN PROGRAM EXECUTION.
-
-            console.log(this._dao.getAll());
-            alert("We need to link this to main program execution. Now go and watch at console.log output. thank you !!");
 
         }.bind(this));
     }

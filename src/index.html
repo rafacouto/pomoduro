@@ -1,104 +1,99 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Pomodoro</title>
-        <meta name="description" content="Pomoduro is a web interface to run Pomodoros.">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Pomodoro</title>
+    <meta name="description" content="Pomoduro is a web interface to run Pomodoros.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
 
 
-        <div class="main-container">
-            <div class="main wrapper clearfix">
+<div class="main-container">
+    <div class="main wrapper clearfix">
 
-                <header class="wrapper clearfix">
-                    <nav>
-                        <ul>
-                            <li><a href="#">settings</a></li>
-                        </ul>
-                    </nav>
-                </header>
+        <header class="wrapper clearfix">
+            <nav>
+                <ul>
+                    <li><a href="settings.html">settings</a></li>
+                </ul>
+            </nav>
+        </header>
 
-                <article>
-                        <div id="main-timer" class="timer clearfix">
-                            <div class="timer-phase">phase</div>
-                            <hr/>
-                            <div class="timer-time">
-                                <span class="timer-min">0</span>:<span class="timer-sec">00</span>
-                            </div>
-                        </div>
-                </article>
+        <article>
+            <div id="main-timer" class="timer clearfix">
+                <div class="timer-phase">phase</div>
+                <hr/>
+                <div class="timer-time">
+                    <span class="timer-min">0</span>:<span class="timer-sec">00</span>
+                </div>
+            </div>
+        </article>
 
-                <!--
-                <aside class="clearfix">
-                    <h3>Pomodoro program</h3>
-                </aside>
-                -->
+    </div> <!-- #main -->
+</div> <!-- #main-container -->
 
-            </div> <!-- #main -->
-        </div> <!-- #main-container -->
+<script src="js/main.js"></script>
+<script src="js/pomoDao.js"></script>
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+<script>
+    var workday = new WorkDay();
 
-        <script src="js/main.js"></script>
-        <script src="node_modules/jquery/dist/jquery.min.js"></script>
-        <script>
 
-            // full-day pomodoros 
-            var workday = new WorkDay();
-            for (var h = 0; h < 24; h++) {
-              for (var m = 0; m < 60; m += 3)
+    [].forEach.call(PomoDAO.getAll(), function (pomoduro) {
 
-                // just for testing: 1 minute work + break + warn
-                workday.newPomodoro(h + ':' + m, 1, 1, 1);
+        workday.newPomodoro(pomoduro.start_time, pomoduro.work_mins, pomoduro.break_mins, pomoduro.warn_mins);
+        console.log("Loaded", pomoduro);
+    });
+
+    $(function () {
+
+        window.setInterval(function () {
+
+            // default
+            var phase_txt = 'No pomodoro';
+            var min_txt = '0';
+            var sec_txt = '00';
+
+            // current pomodoro
+            pomo = workday.getPomodoro();
+            if (pomo) {
+                phase_txt = pomo.getPhase();
+                var time_parts = pomo.getTimeStr().split(':');
+                min_txt = time_parts[0];
+                sec_txt = time_parts[1];
             }
 
-            $(function() {
+            // update
+            $('.timer-phase').text(phase_txt);
+            $('.timer-min').text(min_txt);
+            $('.timer-sec').text(sec_txt);
 
-              window.setInterval(function(){
+            // class by phase
+            var body = $('body');
+            if (!body.hasClass(phase_txt)) {
+                body.removeClass('work');
+                body.removeClass('warn');
+                body.removeClass('break');
+                body.addClass(phase_txt);
+            }
 
-                // default
-                var phase_txt = 'No pomodoro';
-                var min_txt = '0';
-                var sec_txt = '00';
-
-                // current pomodoro
-                pomo = workday.getPomodoro();
-                if (pomo != null)
-                {
-                  phase_txt = pomo.getPhase();
-                  var time_parts = pomo.getTimeStr().split(':');
-                  min_txt = time_parts[0];
-                  sec_txt = time_parts[1];
-                }
-
-                // update 
-                $('.timer-phase').text(phase_txt); 
-                $('.timer-min').text(min_txt); 
-                $('.timer-sec').text(sec_txt); 
-
-                // class by phase
-                var body = $('body');
-                if (!body.hasClass(phase_txt)) {
-                  body.removeClass('work');
-                  body.removeClass('warn');
-                  body.removeClass('break');
-                  body.addClass(phase_txt);
-                }
-
+            if (pomo) {
                 // blink last seconds
                 var sec = pomo.getTimer().getTimespan().getTotalSeconds();
                 if (sec <= 10 && (sec % 2 == 1)) {
-                  body.removeClass(phase_txt);
+                    body.removeClass(phase_txt);
                 }
-
-              }, 100);
-            });
-        </script>
-    </body>
+            }
+        }, 100);
+    });
+</script>
+</body>
 </html>
